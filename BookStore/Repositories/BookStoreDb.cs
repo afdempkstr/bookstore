@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
-using BookStore.Domain.Models;
+﻿using BookStore.Domain.Models;
 using BookStore.Migrations;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Data.Common;
+using System.Data.SqlClient;
 
 namespace BookStore.Repositories
 {
-    public class BookStoreDb : IBookStoreDb
+    public class BookStoreDb : IBookStoreDb, IDisposable
     {
+        private DbConnection _connection;
+
         #region IBookStoreDb interface implementation
 
         public IRepository<Book> Books { get; }
@@ -20,33 +19,36 @@ namespace BookStore.Repositories
 
         #endregion
 
-        private string ConnectionString => Properties.Settings.Default.ConnectionString;
+        private static string ConnectionString => Properties.Settings.Default.ConnectionString;
 
-        private DbConnection ConnectionFactory()
+        private static DbConnection ConnectionFactory()
         {
             return new SqlConnection(ConnectionString);
         }
 
-        public BookStoreDb()
+        static BookStoreDb()
         {
             if (!UpdateDatabase())
             {
                 throw new ApplicationException("The database migrations were unsuccessful");
             }
+        }
 
-            var connection = ConnectionFactory();
-            connection.Open();
-            Books = new BookRepository(connection);
-            Publishers = new PublisherRepository(connection);
+        public BookStoreDb()
+        {
+            _connection = ConnectionFactory();
+            _connection.Open();
+            Books = new BookRepository(_connection);
+            Publishers = new PublisherRepository(_connection);
         }
 
         #region Db Migrations
 
-        private bool UpdateDatabase()
+        private static bool UpdateDatabase()
         {
             try
             {
-                var serviceProvider = ConfugureDbMigrations();
+                var serviceProvider = ConfigureDbMigrations();
 
                 using (var scope = serviceProvider.CreateScope())
                 {
@@ -61,7 +63,7 @@ namespace BookStore.Repositories
             }
         }
 
-        private IServiceProvider ConfugureDbMigrations()
+        private static IServiceProvider ConfigureDbMigrations()
         {
             return new ServiceCollection()
                 // Add common FluentMigrator services
@@ -79,7 +81,7 @@ namespace BookStore.Repositories
                 .BuildServiceProvider(false);
         }
 
-        private void RunDbMigrations(IServiceProvider serviceProvider)
+        private static void RunDbMigrations(IServiceProvider serviceProvider)
         {
             // Instantiate the runner
             var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
@@ -89,5 +91,10 @@ namespace BookStore.Repositories
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            _connection?.Dispose();
+        }
     }
 }
