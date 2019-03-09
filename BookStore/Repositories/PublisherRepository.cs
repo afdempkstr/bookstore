@@ -6,8 +6,8 @@ namespace BookStore.Repositories
 {
     public class PublisherRepository : RepositoryBase<Publisher>
     {
-        public PublisherRepository(DbConnection connection) 
-            : base(connection)
+        public PublisherRepository(DbConnection connection, IBookStoreDb parent) 
+            : base(connection, parent)
         {
         }
 

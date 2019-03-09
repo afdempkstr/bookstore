@@ -1,9 +1,8 @@
-﻿using System;
-using BookStore.Domain.Models;
+﻿using BookStore.Domain.Models;
 using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq.Expressions;
 
 namespace BookStore.Repositories
 {
@@ -13,9 +12,12 @@ namespace BookStore.Repositories
 
         protected string TableName { get; }
 
-        public RepositoryBase(DbConnection connection)
+        protected IBookStoreDb Parent { get; }
+
+        public RepositoryBase(DbConnection connection, IBookStoreDb parent)
         {
             Connection = connection;
+            Parent = parent;
             TableName = typeof(T).Name;
         }
 

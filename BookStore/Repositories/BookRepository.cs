@@ -7,7 +7,8 @@ namespace BookStore.Repositories
 {
     public class BookRepository : RepositoryBase<Book>
     {
-        public BookRepository(DbConnection connection) : base(connection)
+        public BookRepository(DbConnection connection, IBookStoreDb parent) 
+            : base(connection, parent)
         {
         }
 

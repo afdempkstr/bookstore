@@ -38,8 +38,8 @@ namespace BookStore.Repositories
         {
             _connection = ConnectionFactory();
             _connection.Open();
-            Books = new BookRepository(_connection);
-            Publishers = new PublisherRepository(_connection);
+            Books = new BookRepository(_connection, this);
+            Publishers = new PublisherRepository(_connection, this);
         }
 
         #region Db Migrations
