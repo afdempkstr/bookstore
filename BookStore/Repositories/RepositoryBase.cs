@@ -63,5 +63,20 @@ namespace BookStore.Repositories
                 });
         }
 
+        protected virtual IEnumerable<T> AllWith<TForeign>(Expression<Func<T, object>> propertySelector)
+            where TForeign : Entity
+        {
+            var primaryTableName = typeof(TForeign).Name;
+            var expression = propertySelector.Body as MemberExpression;
+            var propertyName = expression.Member.Name;
+            return Connection.Query<T, TForeign, T>(
+                $"SELECT * FROM {TableName} LEFT JOIN {primaryTableName} " +
+                $"ON {TableName}.{primaryTableName}Id = {primaryTableName}.Id",
+                (item, primary) =>
+                {
+                    typeof(T).GetProperty(propertyName).SetValue(item, primary);
+                    return item;
+                });
+        }
     }
 }

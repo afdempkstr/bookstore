@@ -13,7 +13,8 @@ namespace BookStore.Repositories
 
         public override IEnumerable<Book> All()
         {
-            return AllWith<Publisher>((book, publisher) => book.Publisher = publisher);
+            //return AllWith<Publisher>((book, publisher) => book.Publisher = publisher);
+            return AllWith<Publisher>(book => book.Publisher);
         }
 
         public override Book Create(Book item)
