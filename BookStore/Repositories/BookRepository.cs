@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Collections.Generic;
+using System.Data.Common;
 using BookStore.Domain.Models;
 using Dapper;
 
@@ -8,6 +9,11 @@ namespace BookStore.Repositories
     {
         public BookRepository(DbConnection connection) : base(connection)
         {
+        }
+
+        public override IEnumerable<Book> All()
+        {
+            return AllWith<Publisher>((book, publisher) => book.Publisher = publisher);
         }
 
         public override Book Create(Book item)

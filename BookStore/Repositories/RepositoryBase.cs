@@ -1,7 +1,9 @@
-﻿using BookStore.Domain.Models;
+﻿using System;
+using BookStore.Domain.Models;
 using Dapper;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq.Expressions;
 
 namespace BookStore.Repositories
 {
@@ -17,7 +19,7 @@ namespace BookStore.Repositories
             TableName = typeof(T).Name;
         }
 
-        public IEnumerable<T> All()
+        public virtual IEnumerable<T> All()
         {
             return Connection.Query<T>($"SELECT * FROM {TableName}");
         }
@@ -46,5 +48,20 @@ namespace BookStore.Repositories
         public abstract T Create(T item);
 
         public abstract bool Update(T item);
+
+        protected virtual IEnumerable<T> AllWith<TForeign>(Action<T, TForeign> associateAction)
+            where TForeign : Entity
+        {
+            var primaryTableName = typeof(TForeign).Name;
+            return Connection.Query<T, TForeign, T>(
+            $"SELECT * FROM {TableName} LEFT JOIN {primaryTableName} " +
+                $"ON {TableName}.{primaryTableName}Id = {primaryTableName}.Id",
+                (item, primary) =>
+                {
+                    associateAction(item, primary);
+                    return item;
+                });
+        }
+
     }
 }

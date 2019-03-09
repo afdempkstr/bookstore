@@ -9,5 +9,7 @@
         public string CoverPhoto { get; set; }
 
         public int PublicationYear { get; set; }
+
+        public Publisher Publisher { get; set; }
     }
 }
