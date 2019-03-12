@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
+using System.Security.Permissions;
 using BookStore.Domain.Models;
 using Dapper;
 
@@ -19,13 +20,22 @@ namespace BookStore.Repositories
 
         public override Book Create(Book item)
         {
-            var query = $"INSERT INTO {TableName} (Title, Author, CoverPhoto, PublicationYear) " +
-                        "VALUES(@Title, @Author, @CoverPhoto, @PublicationYear); SELECT CAST(SCOPE_IDENTITY() AS int)";
+            //create the publisher first if it does not exist
+            if (!(item.Publisher?.Id > 0))
+            {
+                item.Publisher = Parent.Publishers.Create(item.Publisher);
+            }
+
+            var query = $"INSERT INTO {TableName} (Title, Author, CoverPhoto, PublicationYear, PublisherId) " +
+                        "VALUES(@Title, @Author, @CoverPhoto, @PublicationYear, @PublisherId); " +
+                        "SELECT CAST(SCOPE_IDENTITY() AS int)";
             var insertedItemId = Connection.ExecuteScalar<int>(query, new {
                 item.Title,
                 item.Author,
                 item.CoverPhoto,
-                item.PublicationYear });
+                item.PublicationYear,
+                PublisherId = item.Publisher.Id
+            });
             item.Id = insertedItemId;
             return item;
         }
@@ -36,14 +46,15 @@ namespace BookStore.Repositories
             {
                 var affectedRows = Connection.Execute(
                     $"UPDATE {TableName} SET Title=@Title, Author=@Author, " +
-                        "CoverPhoto=@CoverPhoto, PublicationYear=@PublicationYear " +
-                        "WHERE Id=@Id",
+                        "CoverPhoto=@CoverPhoto, PublicationYear=@PublicationYear, " +
+                        "PublisherId=@PublisherId WHERE Id=@Id",
                     new {
                         item.Id,
                         item.Title,
                         item.Author,
                         item.CoverPhoto,
-                        item.PublicationYear
+                        item.PublicationYear,
+                        PublisherId = item.Publisher.Id
                     });
 
                 return affectedRows > 0;
