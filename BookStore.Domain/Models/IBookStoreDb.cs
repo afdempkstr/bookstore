@@ -4,6 +4,6 @@
     {
         IRepository<Book> Books { get; }
 
-        IRepository<Publisher> Publishers { get; }
+        IPublisherRepository Publishers { get; }
     }
 }

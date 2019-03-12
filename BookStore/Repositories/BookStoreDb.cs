@@ -15,7 +15,7 @@ namespace BookStore.Repositories
         #region IBookStoreDb interface implementation
 
         public IRepository<Book> Books { get; }
-        public IRepository<Publisher> Publishers { get; }
+        public IPublisherRepository Publishers { get; }
 
         #endregion
 

@@ -27,20 +27,19 @@ namespace BookStore.Controllers
         public ActionResult Details(int id)
         {
             Publisher publisher = null;
-            IEnumerable<Book> books = Enumerable.Empty<Book>();
+            IEnumerable<Book> books = null;
 
             using (var db = new BookStoreDb())
             {
                 publisher = db.Publishers.Find(id);
-                if (publisher != null)
-                {
-                    books = db.Books.All().Where(book => book.Publisher.Id == publisher.Id);
-                }
+                books = db.Publishers.GetPublisherBooks(publisher);
             }
 
             var model = new PublisherBooks(publisher, books);
             return View(model);
         }
+
+        
 
         // GET: Publisher/Create
         public ActionResult Create()

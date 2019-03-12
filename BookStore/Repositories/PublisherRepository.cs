@@ -1,10 +1,12 @@
-﻿using BookStore.Domain.Models;
+﻿using System.Collections.Generic;
+using BookStore.Domain.Models;
 using Dapper;
 using System.Data.Common;
+using System.Linq;
 
 namespace BookStore.Repositories
 {
-    public class PublisherRepository : RepositoryBase<Publisher>
+    public class PublisherRepository : RepositoryBase<Publisher>, IPublisherRepository
     {
         public PublisherRepository(DbConnection connection, IBookStoreDb parent) 
             : base(connection, parent)
@@ -32,6 +34,18 @@ namespace BookStore.Repositories
             {
                 return false;
             }
+        }
+
+        public IEnumerable<Book> GetPublisherBooks(Publisher publisher)
+        {
+            IEnumerable<Book> books = Enumerable.Empty<Book>();
+
+            if (publisher != null)
+            {
+                books = Parent.Books.All().Where(book => book.Publisher.Id == publisher.Id);
+            }
+
+            return books;
         }
     }
 }
