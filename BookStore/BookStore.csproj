@@ -226,6 +226,7 @@
     <Compile Include="Repositories\BookStoreDb.cs" />
     <Compile Include="Repositories\PublisherRepository.cs" />
     <Compile Include="Repositories\RepositoryBase.cs" />
+    <Compile Include="ViewModels\PublisherBooks.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -241,6 +242,7 @@
     <Content Include="Views\Publishers\Index.cshtml" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
+    <Content Include="Views\Publishers\Details.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

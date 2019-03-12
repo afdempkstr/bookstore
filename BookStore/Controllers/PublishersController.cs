@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using BookStore.Domain.Models;
 using BookStore.Repositories;
+using BookStore.ViewModels;
 
 namespace BookStore.Controllers
 {
@@ -25,7 +26,20 @@ namespace BookStore.Controllers
         // GET: Publisher/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            Publisher publisher = null;
+            IEnumerable<Book> books = Enumerable.Empty<Book>();
+
+            using (var db = new BookStoreDb())
+            {
+                publisher = db.Publishers.Find(id);
+                if (publisher != null)
+                {
+                    books = db.Books.All().Where(book => book.Publisher.Id == publisher.Id);
+                }
+            }
+
+            var model = new PublisherBooks(publisher, books);
+            return View(model);
         }
 
         // GET: Publisher/Create
