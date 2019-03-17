@@ -3,19 +3,34 @@ using BookStore.Migrations;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace BookStore.Repositories
 {
     public class BookStoreDb : IBookStoreDb, IDisposable
     {
-        private DbConnection _connection;
+        private readonly DbConnection _connection;
 
         #region IBookStoreDb interface implementation
 
         public IRepository<Book> Books { get; }
-        public IPublisherRepository Publishers { get; }
+
+        public IRepository<Publisher> Publishers { get; }
+
+        public IEnumerable<Book> GetPublisherBooks(Publisher publisher)
+        {
+            IEnumerable<Book> books = Enumerable.Empty<Book>();
+
+            if (publisher != null)
+            {
+                books = Books.All().Where(book => book.Publisher.Id == publisher.Id);
+            }
+
+            return books;
+        }
 
         #endregion
 

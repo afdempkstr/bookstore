@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using BookStore.Domain.Models;
+﻿using BookStore.Domain.Models;
 using BookStore.Repositories;
 using BookStore.ViewModels;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace BookStore.Controllers
 {
@@ -32,7 +30,7 @@ namespace BookStore.Controllers
             using (var db = new BookStoreDb())
             {
                 publisher = db.Publishers.Find(id);
-                books = db.Publishers.GetPublisherBooks(publisher);
+                books = db.GetPublisherBooks(publisher);
             }
 
             var model = new PublisherBooks(publisher, books);

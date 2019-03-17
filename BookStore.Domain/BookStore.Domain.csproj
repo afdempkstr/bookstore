@@ -44,7 +44,6 @@
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\Entity.cs" />
     <Compile Include="Models\IBookStoreDb.cs" />
-    <Compile Include="Models\IPublisherRepository.cs" />
     <Compile Include="Models\IRepository.cs" />
     <Compile Include="Models\Publisher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
