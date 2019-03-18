@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -36,11 +37,17 @@ namespace BookStore.Controllers
 
         // POST: Books/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create([Bind(Include = "Title,Author,PublicationYear")]Book book, int publisherId, HttpPostedFileBase CoverPhoto)
         {
             try
             {
-                // TODO: Add insert logic here
+                if (CoverPhoto != null)
+                {
+                    string path = Path.Combine(Server.MapPath("~/Content/Photos"),
+                        Path.GetFileName(CoverPhoto.FileName));
+                    CoverPhoto.SaveAs(path);
+
+                }
 
                 return RedirectToAction("Index");
             }
