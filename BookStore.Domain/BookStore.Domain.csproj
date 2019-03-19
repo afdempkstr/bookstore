@@ -46,6 +46,8 @@
     <Compile Include="Models\IBookStoreDb.cs" />
     <Compile Include="Models\IRepository.cs" />
     <Compile Include="Models\Publisher.cs" />
+    <Compile Include="Models\Role.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
