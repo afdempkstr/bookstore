@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 
-namespace BookStore.Domain.Application
+namespace BookStore.Application
 {
     /// <summary>
     /// Contains all the business logic for the bookstore application.

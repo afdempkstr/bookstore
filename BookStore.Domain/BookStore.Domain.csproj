@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application\BookStoreApp.cs" />
     <Compile Include="Application\IBookStoreApp.cs" />
     <Compile Include="Application\OperationResult.cs" />
     <Compile Include="Models\Book.cs" />

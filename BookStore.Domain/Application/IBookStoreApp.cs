@@ -1,7 +1,7 @@
 ﻿using BookStore.Domain.Models;
 using System.Collections.Generic;
 
-namespace BookStore.Domain.Application
+namespace BookStore.Application
 {
     public interface IBookStoreApp
     {

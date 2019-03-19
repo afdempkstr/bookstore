@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BookStore.Domain.Application
+namespace BookStore.Application
 {
     public class OperationResult
     {
