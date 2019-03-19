@@ -30,7 +30,7 @@ namespace BookStore.Repositories
         {
             try
             {
-                var affectedRows = Connection.Execute($"DELETE FROM {TableName} WHERE Id=@Id", 
+                var affectedRows = Connection.Execute($"DELETE FROM {TableName} WHERE Id=@Id",
                     new {Id = id});
 
                 return affectedRows > 0;
@@ -64,6 +64,5 @@ namespace BookStore.Repositories
                     return item;
                 });
         }
-
     }
 }

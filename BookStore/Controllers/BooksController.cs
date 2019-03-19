@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using BookStore.Domain.Application;
 using BookStore.Domain.Models;
 using BookStore.Repositories;
 
@@ -14,13 +15,21 @@ namespace BookStore.Controllers
         // GET: Books
         public ActionResult Index()
         {
-            IEnumerable<Book> books = Enumerable.Empty<Book>();
+            OperationResult<IEnumerable<Book>> result = null;
+
             using (var db = new BookStoreDb())
             {
-                books = db.Books.All();
+                var app = new BookStoreApp(db);
+                result = app.GetBooks();
             }
 
-            return View(books);
+            if (!result.Success)
+            {
+                // display the error message if you wish
+                return View("Error", null);
+            }
+
+            return View(result.Result);
         }
 
         // GET: Books/Details/5
