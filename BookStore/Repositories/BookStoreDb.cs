@@ -20,6 +20,8 @@ namespace BookStore.Repositories
 
         public IRepository<Publisher> Publishers { get; }
 
+        public IRepository<User> Users { get; }
+
         public IEnumerable<Book> GetPublisherBooks(Publisher publisher)
         {
             IEnumerable<Book> books = Enumerable.Empty<Book>();
@@ -55,6 +57,7 @@ namespace BookStore.Repositories
             _connection.Open();
             Books = new BookRepository(_connection, this);
             Publishers = new PublisherRepository(_connection, this);
+            Users = new UserRepository(_connection, this);
         }
 
         #region Db Migrations

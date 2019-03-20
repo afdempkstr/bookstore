@@ -8,6 +8,8 @@ namespace BookStore.Domain.Models
 
         IRepository<Publisher> Publishers { get; }
 
+        IRepository<User> Users { get; }
+
         IEnumerable<Book> GetPublisherBooks(Publisher publisher);
     }
 }
