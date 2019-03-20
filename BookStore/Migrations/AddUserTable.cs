@@ -16,7 +16,7 @@ namespace BookStore.Migrations
                 .WithColumn("Username").AsString(50).NotNullable().Unique()
                 .WithColumn("Name").AsString(50).NotNullable()
                 .WithColumn("Password").AsString(255).NotNullable()
-                .WithColumn("Salt").AsString(20).NotNullable()
+                .WithColumn("Salt").AsString(50).NotNullable()
                 .WithColumn("RegisteredAt").AsDateTimeOffset().NotNullable();
         }
 

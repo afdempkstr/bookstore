@@ -217,6 +217,7 @@
     <Compile Include="Migrations\AddBookTable.cs" />
     <Compile Include="Migrations\AddPublisherTable.cs" />
     <Compile Include="Migrations\AddRoleTable.cs" />
+    <Compile Include="Migrations\AddStoredProcs.cs" />
     <Compile Include="Migrations\AddUserRolesTable.cs" />
     <Compile Include="Migrations\AddUserTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

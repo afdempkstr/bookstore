@@ -1,8 +1,7 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using BookStore.Domain.Models;
-using BookStore.Migrations;
+﻿using BookStore.Domain.Models;
 using BookStore.Repositories;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace BookStore.Controllers
 {
