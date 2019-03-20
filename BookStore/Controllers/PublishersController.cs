@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using BookStore.Domain.Models;
 using BookStore.Repositories;
 using BookStore.ViewModels;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Web.Mvc;
+using System.Web.UI.WebControls;
+using System.Web.WebSockets;
 
 namespace BookStore.Controllers
 {
@@ -27,20 +29,19 @@ namespace BookStore.Controllers
         public ActionResult Details(int id)
         {
             Publisher publisher = null;
-            IEnumerable<Book> books = Enumerable.Empty<Book>();
+            IEnumerable<Book> books = null;
 
             using (var db = new BookStoreDb())
             {
                 publisher = db.Publishers.Find(id);
-                if (publisher != null)
-                {
-                    books = db.Books.All().Where(book => book.Publisher.Id == publisher.Id);
-                }
+                books = db.GetPublisherBooks(publisher);
             }
 
             var model = new PublisherBooks(publisher, books);
             return View(model);
         }
+
+        
 
         // GET: Publisher/Create
         public ActionResult Create()
@@ -50,11 +51,23 @@ namespace BookStore.Controllers
 
         // POST: Publisher/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create([Bind(Include = "Name")]Publisher publisher)
         {
+            if (string.IsNullOrWhiteSpace(publisher.Name))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             try
             {
-                // TODO: Add insert logic here
+                using (var db = new BookStoreDb())
+                {
+                    var existing = db.Publishers.All().FirstOrDefault(p => p.Name == publisher.Name);
+                    if (existing == null)
+                    {
+                        publisher = db.Publishers.Create(publisher);
+                    }
+                }
 
                 return RedirectToAction("Index");
             }
@@ -65,40 +78,99 @@ namespace BookStore.Controllers
         }
 
         // GET: Publisher/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Publisher publisher = null;
+            using (var db = new BookStoreDb())
+            {
+                publisher = db.Publishers.Find(id.Value);
+            }
+
+            if (publisher == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
+
+            return View(publisher);
         }
 
         // POST: Publisher/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit([Bind(Include = "Id,Name")]Publisher publisher)
         {
             try
             {
-                // TODO: Add update logic here
+                var success = false;
+                using (var db = new BookStoreDb())
+                {
+                    success = db.Publishers.Update(publisher);
+                }
 
-                return RedirectToAction("Index");
+                if (success)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("publisher", "The publisher update failed");
+                    return View(publisher);
+                }
             }
             catch
             {
-                return View();
+                return View(publisher);
             }
         }
 
         // GET: Publisher/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Publisher publisher = null;
+
+            using (var db = new BookStoreDb())
+            {
+                publisher = db.Publishers.Find(id.Value);
+            }
+
+            if (publisher == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(publisher);
         }
 
         // POST: Publisher/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
         {
             try
             {
-                // TODO: Add delete logic here
+                Publisher publisher = null;
+
+                using (var db = new BookStoreDb())
+                {
+                    publisher = db.Publishers.Find(id);
+                    if (publisher == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    else
+                    {
+                        db.Publishers.Delete(id);
+                    }
+                }
 
                 return RedirectToAction("Index");
             }

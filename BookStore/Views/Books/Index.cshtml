@@ -1,0 +1,58 @@
+﻿@using System.Web.UI.WebControls
+@model IEnumerable<BookStore.Domain.Models.Book>
+
+@{
+    ViewBag.Title = "Books";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<div class="container">
+@foreach (var item in Model)
+{
+    <div class="row">
+        <div class="col-md-9">
+            <div class="container">
+                <div class="row">
+                    <div class="col-6">
+                        @Html.DisplayNameFor(model => model.Title)
+                    </div>
+                    <div class="col-6">
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        @Html.DisplayNameFor(model => model.Author)
+                    </div>
+                    <div class="col-6">
+                        @Html.DisplayFor(modelItem => item.Author)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        @Html.DisplayNameFor(model => model.PublicationYear)
+                    </div>
+                    <div class="col-6">
+                        @Html.DisplayFor(modelItem => item.PublicationYear)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+                        @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                        @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <img src="@Url.Content("Photos/")@Html.DisplayFor(modelItem => item.CoverPhoto)"/>
+        </div>
+    </div>
+}
+</div>

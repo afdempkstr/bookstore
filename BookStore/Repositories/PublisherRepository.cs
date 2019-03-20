@@ -1,6 +1,8 @@
-﻿using BookStore.Domain.Models;
+﻿using System.Collections.Generic;
+using BookStore.Domain.Models;
 using Dapper;
 using System.Data.Common;
+using System.Linq;
 
 namespace BookStore.Repositories
 {

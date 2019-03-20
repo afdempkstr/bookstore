@@ -208,6 +208,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="BookStoreApp.cs" />
+    <Compile Include="Controllers\BooksController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PublishersController.cs" />
     <Compile Include="Global.asax.cs">
@@ -247,6 +249,11 @@
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
     <Content Include="Views\Publishers\Details.cshtml" />
+    <Content Include="Views\Publishers\Create.cshtml" />
+    <Content Include="Views\Publishers\Edit.cshtml" />
+    <Content Include="Views\Publishers\Delete.cshtml" />
+    <Content Include="Views\Books\Index.cshtml" />
+    <Content Include="Views\Books\Create.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -256,6 +263,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\Photos\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
