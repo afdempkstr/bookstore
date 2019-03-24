@@ -23,14 +23,14 @@ namespace BookStore.Repositories
 
         public virtual IEnumerable<T> All()
         {
-            return Connection.Query<T>($"SELECT * FROM {TableName}");
+            return Connection.Query<T>($"SELECT * FROM [{TableName}]");
         }
 
         public virtual bool Delete(int id)
         {
             try
             {
-                var affectedRows = Connection.Execute($"DELETE FROM {TableName} WHERE Id=@Id",
+                var affectedRows = Connection.Execute($"DELETE FROM [{TableName}] WHERE Id=@Id",
                     new {Id = id});
 
                 return affectedRows > 0;
@@ -43,7 +43,7 @@ namespace BookStore.Repositories
 
         public virtual T Find(int id)
         {
-            return Connection.QueryFirstOrDefault<T>($"SELECT * FROM {TableName} WHERE Id=@Id",
+            return Connection.QueryFirstOrDefault<T>($"SELECT * FROM [{TableName}] WHERE Id=@Id",
                 new {Id = id});
         }
 
@@ -56,8 +56,8 @@ namespace BookStore.Repositories
         {
             var primaryTableName = typeof(TForeign).Name;
             return Connection.Query<T, TForeign, T>(
-            $"SELECT * FROM {TableName} LEFT JOIN {primaryTableName} " +
-                $"ON {TableName}.{primaryTableName}Id = {primaryTableName}.Id",
+            $"SELECT * FROM [{TableName}] LEFT JOIN [{primaryTableName}] " +
+                $"ON [{TableName}].{primaryTableName}Id = [{primaryTableName}].Id",
                 (item, primary) =>
                 {
                     associateAction(item, primary);
