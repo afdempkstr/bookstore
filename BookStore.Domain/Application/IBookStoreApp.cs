@@ -1,4 +1,5 @@
-﻿using BookStore.Domain.Models;
+﻿using System;
+using BookStore.Domain.Models;
 using System.Collections.Generic;
 
 namespace BookStore.Application

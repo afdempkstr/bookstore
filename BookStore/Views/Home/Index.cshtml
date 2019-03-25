@@ -4,6 +4,12 @@
 }
 
 <h2>BookStore Home Page</h2>
-<p>There are currently @ViewBag.TotalBookCount books</p>
-<p>Book: @ViewBag.Book</p>
-
+@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-primary">@ViewBag.ErrorMessage</div>
+}
+else
+{
+    <p>There are currently @ViewBag.TotalBookCount books</p>
+    <p>Book: @ViewBag.Book</p>   
+}

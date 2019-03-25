@@ -231,6 +231,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PublishersController.cs" />
+    <Compile Include="DefaultDependencyResolver.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -252,6 +253,7 @@
     <Compile Include="Repositories\PublisherRepository.cs" />
     <Compile Include="Repositories\RepositoryBase.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
+    <Compile Include="ServiceProviderExtensions.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\Account.cs" />
     <Compile Include="ViewModels\PublisherBooks.cs" />
