@@ -44,12 +44,72 @@ namespace BookStore.Repositories
 
         public override User Create(User item)
         {
-            throw new NotImplementedException();
+            // note: creating a user does not set their credentials, the
+            // SetUserCredentials stored proc must be called after the user is created
+            var query = $@"INSERT INTO {TableName} (Username, Name, RegisteredAt)
+                        VALUES(@Username, @Name, SYSDATETIMEOFFSET()); " +
+                        "SELECT CAST(SCOPE_IDENTITY() AS int)";
+            var insertedItemId = Connection.ExecuteScalar<int>(query, new
+            {
+                item.Username,
+                item.Name
+            });
+            item.Id = insertedItemId;
+
+            //associate user with roles
+            query = @"INSERT INTO UserRoles(UserId, RoleId) VALUES (@UserId, @RoleId)";
+
+            foreach (var role in item.Roles)
+            {
+                Connection.ExecuteAsync(query, new
+                {
+                    UserId = item.Id,
+                    RoleId = role.Id
+                });
+            }
+
+            return item;
         }
 
         public override bool Update(User item)
         {
-            throw new NotImplementedException();
+            // we can only update an existing user. Any existing user has an Id > 0
+            if (item.Id <= 0)
+            {
+                return false;
+            }
+
+            // note: updating a user does not (re)set their credentials, the
+            // SetUserCredentials stored proc must be called after the user is updated
+            var query = $@"UPDATE {TableName} SET Name = @Name WHERE {TableName}.Id = @Id";
+            var affectedRows = Connection.Execute(query, new
+            {
+                item.Name,
+                item.Id
+            });
+
+            if (affectedRows <= 0)
+            {
+                return false;
+            }
+
+            //clear existing user roles
+            query = "DELETE FROM UserRoles WHERE UserId = @Id";
+            affectedRows = Connection.Execute(query, new {item.Id});
+
+            //associate user with roles
+            query = @"INSERT INTO UserRoles(UserId, RoleId) VALUES (@UserId, @RoleId)";
+
+            foreach (var role in item.Roles)
+            {
+                Connection.ExecuteAsync(query, new
+                {
+                    UserId = item.Id,
+                    RoleId = role.Id
+                });
+            }
+
+            return true;
         }
     }
 }
