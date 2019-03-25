@@ -41,15 +41,15 @@ namespace BookStore.Controllers
             return View(model);
         }
 
-        
-
         // GET: Publisher/Create
+        [Authorize(Roles = "Employee,Admin")]
         public ActionResult Create()
         {
             return View();
         }
 
         // POST: Publisher/Create
+        [Authorize(Roles = "Employee,Admin")]
         [HttpPost]
         public ActionResult Create([Bind(Include = "Name")]Publisher publisher)
         {
@@ -77,6 +77,7 @@ namespace BookStore.Controllers
             }
         }
 
+        [Authorize(Roles = "Employee,Admin")]
         // GET: Publisher/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -99,6 +100,7 @@ namespace BookStore.Controllers
             return View(publisher);
         }
 
+        [Authorize(Roles = "Employee,Admin")]
         // POST: Publisher/Edit/5
         [HttpPost]
         public ActionResult Edit([Bind(Include = "Id,Name")]Publisher publisher)
@@ -128,6 +130,7 @@ namespace BookStore.Controllers
         }
 
         // GET: Publisher/Delete/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -151,6 +154,7 @@ namespace BookStore.Controllers
         }
 
         // POST: Publisher/Delete/5
+        [Authorize(Roles = "Employee,Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
