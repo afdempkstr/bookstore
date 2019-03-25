@@ -4,9 +4,12 @@ using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
+using Dapper;
+using FluentMigrator.Runner.Initialization;
 
 namespace BookStore.Repositories
 {
@@ -20,6 +23,8 @@ namespace BookStore.Repositories
 
         public IRepository<Publisher> Publishers { get; }
 
+        public IRepository<User> Users { get; }
+
         public IEnumerable<Book> GetPublisherBooks(Publisher publisher)
         {
             IEnumerable<Book> books = Enumerable.Empty<Book>();
@@ -30,6 +35,30 @@ namespace BookStore.Repositories
             }
 
             return books;
+        }
+
+        public bool CheckUserCredentials(string username, string password)
+        {
+            var userId = _connection.ExecuteScalar<int>("dbo.CheckUserCredentials",
+                new
+                {
+                    Username = username,
+                    Password = password
+                },
+                commandType: CommandType.StoredProcedure);
+
+            return userId > 0;
+        }
+
+        public void SetUserCredentials(string username, string password)
+        {
+            _connection.ExecuteScalar<int>("dbo.SetUserCredentials",
+                new
+                {
+                    Username = username,
+                    Password = password
+                },
+                commandType: CommandType.StoredProcedure);
         }
 
         #endregion
@@ -55,6 +84,7 @@ namespace BookStore.Repositories
             _connection.Open();
             Books = new BookRepository(_connection, this);
             Publishers = new PublisherRepository(_connection, this);
+            Users = new UserRepository(_connection, this);
         }
 
         #region Db Migrations

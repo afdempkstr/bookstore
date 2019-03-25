@@ -20,6 +20,14 @@
                 <a class="nav-link">@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })</a>
                 <a class="nav-link">@Html.ActionLink("Books", "Index", "Books", new { area = "" }, new { @class = "navbar-brand" })</a>
                 <a class="nav-link">@Html.ActionLink("Publishers", "Index", "Publishers", new { area = "" }, new { @class = "navbar-brand" })</a>
+                @if (!Request.IsAuthenticated)
+                {
+                    <a class="nav-link">@Html.ActionLink("Login", "Index", "Login", new {area = ""}, new {@class = "navbar-brand justify-content-end"})</a>
+                }
+                else
+                {
+                <a class="nav-link">@Html.ActionLink("Logout", "Logout", "Login", new {area = ""}, new {@class = "navbar-brand justify-content-end"})</a>
+                }
             </div>
         </div>
     </nav>

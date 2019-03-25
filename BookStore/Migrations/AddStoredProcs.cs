@@ -9,7 +9,7 @@ namespace BookStore.Migrations
         public override void Up()
         {
             Execute.Sql(@"
-            CREATE PROCEDURE dbo.CheckUserCredentials
+            CREATE IF NOT EXISTS PROCEDURE dbo.CheckUserCredentials
                 @Username NVARCHAR(50),
                 @Password NVARCHAR(50)
             AS
@@ -28,7 +28,7 @@ namespace BookStore.Migrations
             ");
 
             Execute.Sql(@"
-            CREATE PROCEDURE dbo.SetUserCredentials
+            CREATE PROCEDURE IF NOT EXISTS dbo.SetUserCredentials
                 @Username nvarchar(50),
                 @Password nvarchar(50)
             AS

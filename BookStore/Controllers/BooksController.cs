@@ -39,12 +39,14 @@ namespace BookStore.Controllers
         }
 
         // GET: Books/Create
+        [Authorize(Roles = "Employee,Admin")]
         public ActionResult Create()
         {
             return View();
         }
 
         // POST: Books/Create
+        [Authorize(Roles = "Employee,Admin")]
         [HttpPost]
         public ActionResult Create([Bind(Include = "Title,Author,PublicationYear")]Book book, int publisherId, HttpPostedFileBase CoverPhoto)
         {
@@ -67,12 +69,14 @@ namespace BookStore.Controllers
         }
 
         // GET: Books/Edit/5
+        [Authorize(Roles = "Employee,Admin")]
         public ActionResult Edit(int id)
         {
             return View();
         }
 
         // POST: Books/Edit/5
+        [Authorize(Roles = "Employee,Admin")]
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
         {
@@ -89,14 +93,17 @@ namespace BookStore.Controllers
         }
 
         // GET: Books/Delete/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
             return View();
         }
 
         // POST: Books/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [Authorize(Roles = "Admin")]
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
         {
             try
             {
