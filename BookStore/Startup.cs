@@ -14,6 +14,8 @@ namespace BookStore
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+
+            app.MapSignalR();
         }
 
         public void ConfigureAuth(IAppBuilder app)
