@@ -26,7 +26,7 @@ namespace BookStore.Controllers
             if (!result.Success)
             {
                 // display the error message if you wish
-                return View("Error", null);
+                return View("Error");
             }
 
             return View(result.Result);
@@ -42,6 +42,14 @@ namespace BookStore.Controllers
         [Authorize(Roles = "Employee,Admin")]
         public ActionResult Create()
         {
+            var publishers = Enumerable.Empty<Publisher>();
+            using (var db = new BookStoreDb())
+            {
+                publishers = db.Publishers.All();
+            }
+
+            ViewBag.PublisherId = new SelectList(publishers, "Id", "Name");
+            
             return View();
         }
 
@@ -57,14 +65,33 @@ namespace BookStore.Controllers
                     string path = Path.Combine(Server.MapPath("~/Content/Photos"),
                         Path.GetFileName(CoverPhoto.FileName));
                     CoverPhoto.SaveAs(path);
-
+                }
+                else
+                {
+                    book.CoverPhoto = "noimage.png";
+                    // alternatively don't allow saving if a photo is not uploaded
+                    //ModelState.AddModelError("CoverPhoto", "No cover image uploaded");
+                    //return View(book);
                 }
 
+                using (var db = new BookStoreDb())
+                {
+                    var publisher = db.Publishers.Find(publisherId);
+                    book.Publisher = publisher;
+                    book.CoverPhoto = CoverPhoto.FileName;
+                    db.Books.Create(book);
+                }
+                
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                using (var db = new BookStoreDb())
+                {
+                    ViewBag.PublisherId = new SelectList(db.Publishers.All(), "Id", "Name");
+                }
+
+                return View(book);
             }
         }
 
@@ -72,7 +99,17 @@ namespace BookStore.Controllers
         [Authorize(Roles = "Employee,Admin")]
         public ActionResult Edit(int id)
         {
-            return View();
+            var publishers = Enumerable.Empty<Publisher>();
+            Book book = null;
+            using (var db = new BookStoreDb())
+            {
+                publishers = db.Publishers.All();
+                book = db.Books.Find(id);
+            }
+
+            ViewBag.PublisherId = new SelectList(publishers, "Id", "Name");
+
+            return View(book);
         }
 
         // POST: Books/Edit/5
