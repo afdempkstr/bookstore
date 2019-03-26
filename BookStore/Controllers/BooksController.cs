@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using BookStore.Application;
 using BookStore.Domain.Models;
 using BookStore.Repositories;
+using Microsoft.AspNet.SignalR;
 
 namespace BookStore.Controllers
 {
@@ -39,7 +40,7 @@ namespace BookStore.Controllers
         }
 
         // GET: Books/Create
-        [Authorize(Roles = "Employee,Admin")]
+        [System.Web.Mvc.Authorize(Roles = "Employee,Admin")]
         public ActionResult Create()
         {
             var publishers = Enumerable.Empty<Publisher>();
@@ -54,7 +55,7 @@ namespace BookStore.Controllers
         }
 
         // POST: Books/Create
-        [Authorize(Roles = "Employee,Admin")]
+        [System.Web.Mvc.Authorize(Roles = "Employee,Admin")]
         [HttpPost]
         public ActionResult Create([Bind(Include = "Title,Author,PublicationYear")]Book book, int publisherId, HttpPostedFileBase CoverPhoto)
         {
@@ -65,6 +66,7 @@ namespace BookStore.Controllers
                     string path = Path.Combine(Server.MapPath("~/Content/Photos"),
                         Path.GetFileName(CoverPhoto.FileName));
                     CoverPhoto.SaveAs(path);
+                    book.CoverPhoto = CoverPhoto.FileName;
                 }
                 else
                 {
@@ -78,9 +80,11 @@ namespace BookStore.Controllers
                 {
                     var publisher = db.Publishers.Find(publisherId);
                     book.Publisher = publisher;
-                    book.CoverPhoto = CoverPhoto.FileName;
                     db.Books.Create(book);
                 }
+
+                var hubContext = GlobalHost.ConnectionManager.GetHubContext<NotificationHub>();
+                hubContext?.Clients?.All?.onBookAdded(book);
                 
                 return RedirectToAction("Index");
             }
@@ -96,7 +100,7 @@ namespace BookStore.Controllers
         }
 
         // GET: Books/Edit/5
-        [Authorize(Roles = "Employee,Admin")]
+        [System.Web.Mvc.Authorize(Roles = "Employee,Admin")]
         public ActionResult Edit(int id)
         {
             var publishers = Enumerable.Empty<Publisher>();
@@ -113,7 +117,7 @@ namespace BookStore.Controllers
         }
 
         // POST: Books/Edit/5
-        [Authorize(Roles = "Employee,Admin")]
+        [System.Web.Mvc.Authorize(Roles = "Employee,Admin")]
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
         {
@@ -130,14 +134,14 @@ namespace BookStore.Controllers
         }
 
         // GET: Books/Delete/5
-        [Authorize(Roles = "Admin")]
+        [System.Web.Mvc.Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
             return View();
         }
 
         // POST: Books/Delete/5
-        [Authorize(Roles = "Admin")]
+        [System.Web.Mvc.Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
