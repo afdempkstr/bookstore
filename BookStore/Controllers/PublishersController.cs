@@ -34,6 +34,17 @@ namespace BookStore.Controllers
                 publishers = result.Result;
             }
 
+            var result = _app.GetPublishers();
+            if (!result.Success)
+            {
+                //notify the user by printing some message
+                ViewBag.ErrorMessage = result.ErrorMessage ?? "Could not get publishers";
+            }
+            else
+            {
+                publishers = result.Result;
+            }
+
             return View(publishers);
         }
 
