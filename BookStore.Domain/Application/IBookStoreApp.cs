@@ -1,9 +1,10 @@
-﻿using BookStore.Domain.Models;
+﻿using System;
+using BookStore.Domain.Models;
 using System.Collections.Generic;
 
 namespace BookStore.Application
 {
-    public interface IBookStoreApp
+    public interface IBookStoreApp : IDisposable
     {
         #region Book Methods
 
@@ -12,6 +13,8 @@ namespace BookStore.Application
         #endregion
 
         #region Publisher Methods
+
+        OperationResult<IEnumerable<Publisher>> GetPublishers();
 
         OperationResult<Publisher> GetPublisher(int id);
 
@@ -25,6 +28,6 @@ namespace BookStore.Application
 
         #endregion
 
-
+        // Add other application-level functionality surface methods here, e.g. reporting
     }
 }

@@ -4,7 +4,16 @@
     ViewBag.Title = "List of publishers";
 }
 
-<h2>Index</h2>
+<h2>Publishers</h2>
+@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+{
+    <div id="notification" class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Oops!</strong> @ViewBag.ErrorMessage
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
 
 <p>
     @Html.ActionLink("Create New", "Create")

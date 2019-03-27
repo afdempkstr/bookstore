@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BookStore.Domain.Models
 {
-    public interface IBookStoreDb
+    public interface IBookStoreDb : IDisposable
     {
         IRepository<Book> Books { get; }
 

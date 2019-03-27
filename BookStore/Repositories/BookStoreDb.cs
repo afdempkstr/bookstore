@@ -1,5 +1,6 @@
 ﻿using BookStore.Domain.Models;
 using BookStore.Migrations;
+using Dapper;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -8,12 +9,10 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
-using Dapper;
-using FluentMigrator.Runner.Initialization;
 
 namespace BookStore.Repositories
 {
-    public class BookStoreDb : IBookStoreDb, IDisposable
+    public class BookStoreDb : IBookStoreDb
     {
         private readonly DbConnection _connection;
 
