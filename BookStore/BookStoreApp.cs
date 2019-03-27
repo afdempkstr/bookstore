@@ -18,6 +18,19 @@ namespace BookStore.Application
 
         #region Publisher Methods
 
+        public OperationResult<IEnumerable<Publisher>> GetPublishers()
+        {
+            try
+            {
+                var publishers = _db.Publishers.All();
+                return new OperationResult<IEnumerable<Publisher>>(publishers);
+            }
+            catch (DbException e)
+            {
+                return new OperationResult<IEnumerable<Publisher>>(e);
+            }
+        }
+
         public OperationResult<Publisher> GetPublisher(int id)
         {
             throw new System.NotImplementedException();
@@ -87,5 +100,10 @@ namespace BookStore.Application
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            _db?.Dispose();
+        }
     }
 }

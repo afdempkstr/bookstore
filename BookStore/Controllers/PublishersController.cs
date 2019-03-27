@@ -5,18 +5,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using BookStore.Application;
 
 namespace BookStore.Controllers
 {
     public class PublishersController : Controller
     {
+        private IBookStoreApp _app;
+
+        public PublishersController(IBookStoreApp app)
+        {
+            _app = app;
+        }
+
         // GET: Publisher
         public ActionResult Index()
         {
             var publishers = Enumerable.Empty<Publisher>();
-            using (var db = new BookStoreDb())
+            
+            var result = _app.GetPublishers();
+            if (!result.Success)
             {
-                publishers = db.Publishers.All();
+                //notify the user by printing some message
+                ViewBag.ErrorMessage = result.ErrorMessage ?? "Could not get publishers";
+            }
+            else
+            {
+                publishers = result.Result;
             }
 
             return View(publishers);
