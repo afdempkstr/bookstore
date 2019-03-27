@@ -22,18 +22,6 @@ namespace BookStore.Controllers
         public ActionResult Index()
         {
             var publishers = Enumerable.Empty<Publisher>();
-            
-            var result = _app.GetPublishers();
-            if (!result.Success)
-            {
-                //notify the user by printing some message
-                ViewBag.ErrorMessage = result.ErrorMessage ?? "Could not get publishers";
-            }
-            else
-            {
-                publishers = result.Result;
-            }
-
             var result = _app.GetPublishers();
             if (!result.Success)
             {
