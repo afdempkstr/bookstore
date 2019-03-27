@@ -33,12 +33,28 @@ namespace BookStore.Application
 
         public OperationResult<Publisher> GetPublisher(int id)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var publisher = _db.Publishers.Find(id);
+                return new OperationResult<Publisher>(publisher);
+            }
+            catch (DbException e)
+            {
+                return new OperationResult<Publisher>(e);
+            }
         }
 
         public OperationResult<Publisher> Create(Publisher publisher)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                publisher = _db.Publishers.Create(publisher);
+                return new OperationResult<Publisher>(publisher);
+            }
+            catch (DbException e)
+            {
+                return new OperationResult<Publisher>(e);
+            }
         }
 
         public OperationResult<bool> Update(Publisher publisher)
