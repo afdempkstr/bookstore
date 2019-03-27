@@ -22,3 +22,12 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.notify-book-title, .notify-book-author {
+    color: #333333;
+    font-weight: 600;
+}
+
+.hidden {
+    display: none;
+}

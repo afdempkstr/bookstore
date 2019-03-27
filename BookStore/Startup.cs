@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using BookStore.Application;
 using BookStore.Domain.Models;
 using BookStore.Repositories;
+using Microsoft.AspNet.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 
 [assembly: OwinStartupAttribute(typeof(BookStore.Startup))]
@@ -28,12 +29,17 @@ namespace BookStore
 
             ConfigureAuth(app);
 
+            app.MapSignalR();
+
             // Create a new resolver from our own default implementation
             var resolver = new DefaultDependencyResolver(services.BuildServiceProvider());
 
             // Set the application resolver to our default resolver. This comes from "System.Web.Mvc"
             //Other services may be added elsewhere
             DependencyResolver.SetResolver(resolver);
+
+            GlobalHost.DependencyResolver.Register(typeof(IBookStoreDb), ()=> resolver.GetService<IBookStoreDb>());
+            GlobalHost.DependencyResolver.Register(typeof(IBookStoreApp), () => resolver.GetService<IBookStoreApp>());
         }
 
         public void ConfigureAuth(IAppBuilder app)

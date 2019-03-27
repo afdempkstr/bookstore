@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using BookStore.Application;
 using BookStore.Domain.Models;
 using BookStore.Repositories;
+using Microsoft.AspNet.SignalR;
 
 namespace BookStore.Controllers
 {
@@ -26,7 +27,7 @@ namespace BookStore.Controllers
             if (!result.Success)
             {
                 // display the error message if you wish
-                return View("Error", null);
+                return View("Error");
             }
 
             return View(result.Result);
@@ -39,14 +40,22 @@ namespace BookStore.Controllers
         }
 
         // GET: Books/Create
-        [Authorize(Roles = "Employee,Admin")]
+        [System.Web.Mvc.Authorize(Roles = "Employee,Admin")]
         public ActionResult Create()
         {
+            var publishers = Enumerable.Empty<Publisher>();
+            using (var db = new BookStoreDb())
+            {
+                publishers = db.Publishers.All();
+            }
+
+            ViewBag.PublisherId = new SelectList(publishers, "Id", "Name");
+            
             return View();
         }
 
         // POST: Books/Create
-        [Authorize(Roles = "Employee,Admin")]
+        [System.Web.Mvc.Authorize(Roles = "Employee,Admin")]
         [HttpPost]
         public ActionResult Create([Bind(Include = "Title,Author,PublicationYear")]Book book, int publisherId, HttpPostedFileBase CoverPhoto)
         {
@@ -57,26 +66,58 @@ namespace BookStore.Controllers
                     string path = Path.Combine(Server.MapPath("~/Content/Photos"),
                         Path.GetFileName(CoverPhoto.FileName));
                     CoverPhoto.SaveAs(path);
-
+                    book.CoverPhoto = CoverPhoto.FileName;
+                }
+                else
+                {
+                    book.CoverPhoto = "noimage.png";
+                    // alternatively don't allow saving if a photo is not uploaded
+                    //ModelState.AddModelError("CoverPhoto", "No cover image uploaded");
+                    //return View(book);
                 }
 
+                using (var db = new BookStoreDb())
+                {
+                    var publisher = db.Publishers.Find(publisherId);
+                    book.Publisher = publisher;
+                    db.Books.Create(book);
+                }
+
+                var hubContext = GlobalHost.ConnectionManager.GetHubContext<NotificationHub>();
+                hubContext?.Clients?.All?.onBookAdded(book);
+                
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                using (var db = new BookStoreDb())
+                {
+                    ViewBag.PublisherId = new SelectList(db.Publishers.All(), "Id", "Name");
+                }
+
+                return View(book);
             }
         }
 
         // GET: Books/Edit/5
-        [Authorize(Roles = "Employee,Admin")]
+        [System.Web.Mvc.Authorize(Roles = "Employee,Admin")]
         public ActionResult Edit(int id)
         {
-            return View();
+            var publishers = Enumerable.Empty<Publisher>();
+            Book book = null;
+            using (var db = new BookStoreDb())
+            {
+                publishers = db.Publishers.All();
+                book = db.Books.Find(id);
+            }
+
+            ViewBag.PublisherId = new SelectList(publishers, "Id", "Name");
+
+            return View(book);
         }
 
         // POST: Books/Edit/5
-        [Authorize(Roles = "Employee,Admin")]
+        [System.Web.Mvc.Authorize(Roles = "Employee,Admin")]
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
         {
@@ -93,14 +134,14 @@ namespace BookStore.Controllers
         }
 
         // GET: Books/Delete/5
-        [Authorize(Roles = "Admin")]
+        [System.Web.Mvc.Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
             return View();
         }
 
         // POST: Books/Delete/5
-        [Authorize(Roles = "Admin")]
+        [System.Web.Mvc.Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

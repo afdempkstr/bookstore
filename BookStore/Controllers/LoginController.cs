@@ -23,12 +23,17 @@ namespace BookStore.Controllers
         public ActionResult Login(Account account)
         {
             User user = null;
+            bool verified = false;
             using (var db = new BookStoreDb())
             {
                 user = db.Users.All().FirstOrDefault(u => u.Username == account.Username);
+                if (user != null && db.CheckUserCredentials(account.Username, account.Password))
+                {
+                    verified = true;
+                }
             }
 
-            if (user == null /* or !validate user password */)
+            if (!verified)
             {
                 ModelState.AddModelError("Username", "Invalid username or password");
                 return RedirectToAction("Index");
