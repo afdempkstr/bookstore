@@ -6,8 +6,15 @@
 
 
 <h2>BookStore Home Page</h2>
-<p>There are currently @ViewBag.TotalBookCount books</p>
-<p>Book: @ViewBag.Book</p>
+@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-primary">@ViewBag.ErrorMessage</div>
+}
+else
+{
+    <p>There are currently @ViewBag.TotalBookCount books</p>
+    <p>Book: @ViewBag.Book</p>   
+}
 
 <div id="notification" class="alert alert-success alert-dismissible fade" role="alert">
     <strong>New Book Added!</strong> Check this out! <span class="notify-book-title">Title</span> by <span class="notify-book-author">Author</span>

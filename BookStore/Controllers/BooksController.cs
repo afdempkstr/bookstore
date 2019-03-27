@@ -66,7 +66,7 @@ namespace BookStore.Controllers
                     string path = Path.Combine(Server.MapPath("~/Content/Photos"),
                         Path.GetFileName(CoverPhoto.FileName));
                     CoverPhoto.SaveAs(path);
-                    book.CoverPhoto = CoverPhoto.FileName;
+                    book.CoverPhoto = Path.GetFileName(CoverPhoto.FileName);
                 }
                 else
                 {
@@ -137,7 +137,18 @@ namespace BookStore.Controllers
         [System.Web.Mvc.Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
-            return View();
+            Book book = null;
+            using (var db = new BookStoreDb())
+            {
+                book = db.Books.Find(id);
+            }
+
+            if (book == null)
+            {
+                return HttpNotFound("Book not found");
+            }
+
+            return View(book);
         }
 
         // POST: Books/Delete/5
@@ -148,7 +159,10 @@ namespace BookStore.Controllers
         {
             try
             {
-                // TODO: Add delete logic here
+                using (var db = new BookStoreDb())
+                {
+                    db.Books.Delete(id);
+                }
 
                 return RedirectToAction("Index");
             }
