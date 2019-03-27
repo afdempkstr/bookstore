@@ -1,0 +1,58 @@
+﻿@model BookStore.Domain.Models.Book
+
+@{
+    ViewBag.Title = "Delete book";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this book?</h3>
+<div>
+    <h4>Book</h4>
+    <hr />
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+
+            </div>
+            <div class="col-md-3">
+                <img src="@Url.Content("~/Content/Photos/")@Html.DisplayFor(model => model.CoverPhoto)" style="width: 100px;" />
+            </div>
+        </div>
+    </div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Author)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Author)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PublicationYear)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PublicationYear)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm("Delete", "Books", FormMethod.Post)) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>
