@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using BookStore.Application;
+using BookStore.Domain.Application;
 using BookStore.Domain.Models;
 using BookStore.Repositories;
 using Microsoft.AspNet.SignalR;
@@ -13,6 +14,13 @@ namespace BookStore.Controllers
 {
     public class BooksController : Controller
     {
+        private IStorageHelper _storageHelper;
+
+        public BooksController(IStorageHelper storageHelper)
+        {
+            _storageHelper = storageHelper;
+        }
+
         // GET: Books
         public ActionResult Index()
         {
@@ -63,10 +71,19 @@ namespace BookStore.Controllers
             {
                 if (CoverPhoto != null)
                 {
-                    string path = Path.Combine(Server.MapPath("~/Content/Photos"),
-                        Path.GetFileName(CoverPhoto.FileName));
-                    CoverPhoto.SaveAs(path);
-                    book.CoverPhoto = Path.GetFileName(CoverPhoto.FileName);
+                    var imageFileName = Path.GetFileName(CoverPhoto.FileName);
+                    var imageContentType = CoverPhoto.ContentType;
+                    var uploaded = _storageHelper.UploadImage(imageFileName, imageContentType,
+                        CoverPhoto.InputStream);
+                    if (uploaded.Success)
+                    {
+                        book.CoverPhoto = uploaded.Result;
+                    }
+
+                    //string path = Path.Combine(Server.MapPath("~/Content/Photos"),
+                    //    imageFileName);
+                    //CoverPhoto.SaveAs(path);
+                    //book.CoverPhoto = imageFileName;
                 }
                 else
                 {
