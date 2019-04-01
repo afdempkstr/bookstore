@@ -9,7 +9,7 @@ namespace BookStore.Migrations
         public override void Up()
         {
             Execute.Sql(@"
-            CREATE IF NOT EXISTS PROCEDURE dbo.CheckUserCredentials
+            CREATE PROCEDURE dbo.CheckUserCredentials
                 @Username NVARCHAR(50),
                 @Password NVARCHAR(50)
             AS
@@ -28,7 +28,7 @@ namespace BookStore.Migrations
             ");
 
             Execute.Sql(@"
-            CREATE PROCEDURE IF NOT EXISTS dbo.SetUserCredentials
+            CREATE PROCEDURE dbo.SetUserCredentials
                 @Username nvarchar(50),
                 @Password nvarchar(50)
             AS
@@ -64,13 +64,22 @@ namespace BookStore.Migrations
             });
 
             Execute.Sql("EXEC dbo.SetUserCredentials 'admin', 'admin'");
+
+            Execute.Sql(@"
+            INSERT INTO [dbo].[UserRoles]
+                ([UserId]
+                ,[RoleId])
+            VALUES
+                ((SELECT Id FROM [User] WHERE Username='admin'),
+	            (SELECT Id FROM [Role] WHERE Name='Admin'))
+            ");
         }
 
         public override void Down()
         {
-            Execute.Sql("DROP PROCEDURE IF EXISTS dbo.CheckUserCredentials");
+            Execute.Sql("DROP PROCEDURE dbo.CheckUserCredentials");
 
-            Execute.Sql("DROP PROCEDURE IF EXISTS dbo.SetUserCredentials");
+            Execute.Sql("DROP PROCEDURE dbo.SetUserCredentials");
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using BookStore.Application;
+using BookStore.Domain.Application;
 using BookStore.Domain.Models;
 using BookStore.Repositories;
 using Microsoft.AspNet.SignalR;
@@ -57,11 +58,14 @@ namespace BookStore
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add the bookstore db as an IBookStoreDb - this can be instantiated with no parameters
+            // Add the bookstore db as an IBookStoreDb 
             services.AddTransient(typeof(IBookStoreDb), typeof(BookStoreDb));
 
             // Add the Bookstore App as a singleton - it requires an IBookStoreDb
             services.AddSingleton(typeof(IBookStoreApp), typeof(BookStoreApp));
+
+            // Add the azure storage helper as an IStorageHelper - this can be instantiated with no parameters
+            services.AddTransient(typeof(IStorageHelper), typeof(AzureStorageHelper));
 
             // Add the owin authentication manager as a service
             services.AddTransient(typeof(Microsoft.Owin.Security.IAuthenticationManager), p => new OwinContext().Authentication);

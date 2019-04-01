@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Application\IBookStoreApp.cs" />
     <Compile Include="Application\IBookStoreAppClient.cs" />
+    <Compile Include="Application\IStorageHelper.cs" />
     <Compile Include="Application\OperationResult.cs" />
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\Entity.cs" />
