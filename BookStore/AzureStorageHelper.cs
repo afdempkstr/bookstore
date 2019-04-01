@@ -13,6 +13,7 @@ namespace BookStore
         private static readonly string _storageAccount;
         private static readonly string _storageKey;
         private static readonly string _storageContainer;
+        private static readonly CloudStorageAccount _cloudStorageAccount;
         
         private CloudBlobContainer _container;
 
@@ -21,21 +22,13 @@ namespace BookStore
             _storageAccount = CloudConfigurationManager.GetSetting("StorageAccountName");
             _storageKey = CloudConfigurationManager.GetSetting("StorageAccountKey");
             _storageContainer = CloudConfigurationManager.GetSetting("StorageContainerName");
+            var connectionString = $"DefaultEndpointsProtocol=https;AccountName={_storageAccount};AccountKey={_storageKey}";
+            _cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
         }
-
-        private static CloudStorageAccount StorageAccount
-        {
-            get
-            {
-                var connectionString = $"DefaultEndpointsProtocol=https;AccountName={_storageAccount};AccountKey={_storageKey}";
-                return CloudStorageAccount.Parse(connectionString);
-            }
-        }
-
+        
         public AzureStorageHelper()
         {
-            var storageAccount = StorageAccount;
-            var blobClient = storageAccount.CreateCloudBlobClient();
+            var blobClient = _cloudStorageAccount.CreateCloudBlobClient();
             _container = blobClient.GetContainerReference(_storageContainer);
         }
 
