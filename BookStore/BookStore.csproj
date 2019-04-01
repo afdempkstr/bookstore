@@ -230,6 +230,8 @@
   <ItemGroup>
     <Content Include="Content\site.css" />
     <Content Include="Global.asax" />
+    <None Include="Properties\PublishProfiles\afdempmvcbookstore - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\afdempmvcbookstore - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />

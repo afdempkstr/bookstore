@@ -17,14 +17,6 @@ namespace BookStore.Controllers
         public ActionResult Index()
         {
             var bookCount = 0;
-            //Book book = null;
-            //using (var db = new BookStoreDb())
-            //{
-            //    var books = db.Books.All();
-            //    book = books.FirstOrDefault();
-            //    bookCount = books.Count();
-            //}
-
             var result = _app.GetBooks();
             if (!result.Success)
             {
@@ -35,7 +27,7 @@ namespace BookStore.Controllers
             {
                 var books = result.Result;
                 var book = books.FirstOrDefault();
-                ViewBag.Book = $"{book?.Title} by {book.Publisher?.Name}";
+                ViewBag.Book = $"{book?.Title} by {book?.Publisher?.Name}";
                 bookCount = books.Count();
             }
 
