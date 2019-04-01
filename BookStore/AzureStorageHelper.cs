@@ -10,11 +10,18 @@ namespace BookStore
 {
     public class AzureStorageHelper : IStorageHelper
     {
-        private static string _storageAccount = CloudConfigurationManager.GetSetting("StorageAccountName");
-        private static string _storageKey = CloudConfigurationManager.GetSetting("StorageAccountKey");
-        private static string _storageContainer = CloudConfigurationManager.GetSetting("StorageContainerName");
-
+        private static readonly string _storageAccount;
+        private static readonly string _storageKey;
+        private static readonly string _storageContainer;
+        
         private CloudBlobContainer _container;
+
+        static AzureStorageHelper()
+        {
+            _storageAccount = CloudConfigurationManager.GetSetting("StorageAccountName");
+            _storageKey = CloudConfigurationManager.GetSetting("StorageAccountKey");
+            _storageContainer = CloudConfigurationManager.GetSetting("StorageContainerName");
+        }
 
         private static CloudStorageAccount StorageAccount
         {
@@ -32,7 +39,7 @@ namespace BookStore
             _container = blobClient.GetContainerReference(_storageContainer);
         }
 
-        public OperationResult<string> UploadImage(string filename, string contentType, Stream imageFileStream)
+        public OperationResult<string> UploadImage(string filename, string contentType, Stream imageFileStream, string folder = null)
         {
             try
             {

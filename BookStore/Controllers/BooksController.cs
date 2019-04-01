@@ -73,17 +73,13 @@ namespace BookStore.Controllers
                 {
                     var imageFileName = Path.GetFileName(CoverPhoto.FileName);
                     var imageContentType = CoverPhoto.ContentType;
+                    var folderPath = Server.MapPath("~/Content/Photos");
                     var uploaded = _storageHelper.UploadImage(imageFileName, imageContentType,
-                        CoverPhoto.InputStream);
+                        CoverPhoto.InputStream, folderPath);
                     if (uploaded.Success)
                     {
                         book.CoverPhoto = uploaded.Result;
                     }
-
-                    //string path = Path.Combine(Server.MapPath("~/Content/Photos"),
-                    //    imageFileName);
-                    //CoverPhoto.SaveAs(path);
-                    //book.CoverPhoto = imageFileName;
                 }
                 else
                 {
@@ -105,8 +101,10 @@ namespace BookStore.Controllers
                 
                 return RedirectToAction("Index");
             }
-            catch
+            catch(Exception e)
             {
+                ModelState.AddModelError("create", e);
+
                 using (var db = new BookStoreDb())
                 {
                     ViewBag.PublisherId = new SelectList(db.Publishers.All(), "Id", "Name");

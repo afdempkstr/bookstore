@@ -9,14 +9,5 @@
 &lt;/SerializableConnectionString&gt;</DesignTimeValue>
       <Value Profile="(Default)">Server=.;Database=bookstore;User Id=dbuser;Password=dbpass;</Value>
     </Setting>
-    <Setting Name="StorageAccountName" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">.</Value>
-    </Setting>
-    <Setting Name="StorageAccountKey" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">.</Value>
-    </Setting>
-    <Setting Name="StorageContainerName" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">bookstoreimages</Value>
-    </Setting>
   </Settings>
 </SettingsFile>

@@ -51,7 +51,14 @@
             </div>
         </div>
         <div class="col-md-3">
-            <img src="@Url.Content("~/Content/Photos/")@Html.DisplayFor(modelItem => item.CoverPhoto)" style="width: 100px;"/>
+            @if (item.CoverPhoto.IndexOf("://") != -1)
+            {
+                <img src="@Html.DisplayFor(modelItem => item.CoverPhoto)" style="width: 100px;" />
+            }
+            else
+            {
+                <img src="@Url.Content("~/Content/Photos/")@Html.DisplayFor(modelItem => item.CoverPhoto)" style="width: 100px;" />
+            }
         </div>
     </div>
 }
